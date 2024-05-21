@@ -60,13 +60,18 @@ def get_arp_table():
     except subprocess.CalledProcessError:
         return []
 
+
 for line in get_arp_table():
-    match = re.search(r'(\?\S*) \(([\d\.]+)\) at ([\w:]+) on (\w+)', line)
-    if match:
-        hostname, ipv4, mac, interface = match.groups()
-        # Replace '?' with a placeholder if hostname is not available
-        hostname = hostname if hostname != '?' else 'N/A'
-        print(f"{ipv4} is assigned to {mac}, has name {hostname}, on the {interface} network")
-    else:
-        print("Line could not be parsed:", line)
+    try:
+        match = re.search(r'(\?\S*) \(([\d\.]+)\) at ([\w:]+) on (\w+)', line)
+        if match:
+            hostname, ipv4, mac, interface = match.groups()
+            # Replace '?' with a placeholder if hostname is not available
+            hostname = hostname if hostname != '?' else 'N/A'
+            print(f"{ipv4} is assigned to {mac}, has name {hostname}, on the {interface} network")
+            
+        else:
+            print("Line could not be parsed:", line)
+    except Exception as e:
+        print("Error parsing line:", line, e)
     
